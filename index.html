@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI Movie Recommender</title>
+
+    <style>
+        body {
+            margin:0;
+            font-family: Arial;
+            background:#141414;
+            color:white;
+        }
+
+        h1 {
+            text-align:center;
+            background:black;
+            padding:20px;
+            color:#e50914;
+        }
+
+        .container {
+            padding:20px;
+            text-align:center;
+        }
+
+        input {
+            padding:10px;
+            width:200px;
+            border:none;
+            border-radius:5px;
+        }
+
+        button {
+            padding:10px 15px;
+            background:#e50914;
+            border:none;
+            color:white;
+            cursor:pointer;
+            border-radius:5px;
+        }
+
+        h2 {
+            text-align:left;
+            border-left:5px solid #e50914;
+            padding-left:10px;
+            margin-top:30px;
+        }
+
+        .row {
+            display:flex;
+            overflow-x:auto;
+            gap:10px;
+            padding:10px;
+        }
+
+        .card {
+            min-width:180px;
+            background:#222;
+            padding:10px;
+            border-radius:8px;
+            transition:0.3s;
+        }
+
+        .card:hover {
+            transform:scale(1.05);
+            background:#333;
+        }
+    </style>
+</head>
+
+<body>
+
+<h1>🎬 AI Movie Recommender</h1>
+
+<div class="container">
+
+    <input id="username" placeholder="Enter username">
+    <button onclick="login()">Login</button>
+
+    <h2>🔥 Top Picks</h2>
+    <div id="top" class="row"></div>
+
+    <h2>🎯 Because You Watched</h2>
+    <div id="because"></div>
+
+</div>
+
+<script>
+function login() {
+
+    let user = document.getElementById("username").value;
+
+    fetch("http://127.0.0.1:5000/recommend/" + user)
+    .then(res => res.json())
+    .then(data => {
+
+        console.log(data);
+
+        // TOP PICKS (SAFE)
+        document.getElementById("top").innerHTML =
+            (data.top_picks || []).map(m =>
+                `<div class="card">${m}</div>`
+            ).join("");
+
+        // BECAUSE YOU WATCHED (SAFE)
+        let html = "";
+
+        (data.because || []).forEach(b => {
+
+            html += `<h3 style="color:#e50914">${b.because}</h3>`;
+            html += `<div class="row">`;
+
+            (b.recommendations || []).forEach(r => {
+                html += `<div class="card">${r}</div>`;
+            });
+
+            html += `</div>`;
+        });
+
+        document.getElementById("because").innerHTML = html;
+    })
+    .catch(err => {
+        console.log(err);
+        alert("Backend not reachable");
+    });
+}
+</script>
+
+</body>
+</html>
