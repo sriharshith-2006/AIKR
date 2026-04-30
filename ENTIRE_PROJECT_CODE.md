@@ -1,3 +1,79 @@
+# AIKR Entire Project Source Code
+This file contains the complete, up-to-date source code for the AIKR project. Use this context when asking Claude to modify or debug the application.
+
+## 1. movie.py (Flask Backend)
+```python
+from flask import Flask, jsonify
+from flask_cors import CORS
+import pandas as pd
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+
+app = Flask(__name__)
+CORS(app)
+
+# Load dataset
+movies = pd.read_csv("movies.csv")
+ratings = pd.read_csv("ratings.csv")
+
+# preprocess
+movies["genres"] = movies["genres"].str.replace("|", " ", regex=False)
+
+# ML MODEL
+tfidf = TfidfVectorizer(stop_words="english")
+matrix = tfidf.fit_transform(movies["genres"])
+similarity = cosine_similarity(matrix)
+
+user_map = {"sri": 1, "alex": 2, "john": 3}
+
+
+@app.route("/")
+def home():
+    return "SERVER WORKING"
+
+
+def recommend_logic(user_id):
+
+    user_data = ratings[ratings["userId"] == user_id]
+    watched_ids = user_data[user_data["rating"] >= 4]["movieId"]
+
+    watched_movies = movies[movies["movieId"].isin(watched_ids)]
+
+    results = []
+
+    for _, row in watched_movies.head(2).iterrows():
+
+        idx = movies[movies["movieId"] == row["movieId"]].index[0]
+
+        scores = list(enumerate(similarity[idx]))
+        scores = sorted(scores, key=lambda x: x[1], reverse=True)[1:5]
+
+        recs = [movies.iloc[i[0]]["title"] for i in scores]
+
+        results.append({
+            "because": row["title"],
+            "recommendations": recs
+        })
+
+    return results
+
+
+@app.route("/recommend/<username>")
+def recommend(username):
+
+    user_id = user_map.get(username, 1)
+
+    return jsonify({
+        "top_picks": movies.sample(6)["title"].tolist(),
+        "because": recommend_logic(user_id)
+    })
+
+
+if __name__ == "__main__":
+    app.run(port=5001, debug=True)```
+
+## 2. index.html (Frontend UI)
+```html
 <!DOCTYPE html>
 <html lang="en">
 
@@ -554,13 +630,11 @@
             console.log(data);
 
             // TOP PICKS
-            const topPicksHTML = (data.top_picks || []).map((m, i) => {
-                let bgStyle = m.poster ? `background-image: url('${m.poster}'); background-size: cover; background-position: center;` : '';
-                let gradientClass = m.poster ? '' : getGradientClass(i);
-                return `<div class="card ${gradientClass}" style="${bgStyle}">
-                    <div class="placeholder-title">${m.title}</div>
-                </div>`;
-            }).join("");
+            const topPicksHTML = (data.top_picks || []).map((m, i) =>
+                `<div class="card ${getGradientClass(i)}">
+                    <div class="placeholder-title">${m}</div>
+                </div>`
+            ).join("");
             document.getElementById("top-picks-container").innerHTML = topPicksHTML;
 
             // BECAUSE YOU WATCHED
@@ -569,11 +643,9 @@
                 becauseHTML += `<h3 style="margin-top: 20px; margin-bottom: 15px; font-size: 16px; font-weight: normal; color: var(--text-secondary);">Because you watched <span style="color: white; font-weight: 600;">${b.because}</span>:</h3>`;
                 becauseHTML += `<div class="cards-row">`;
                 (b.recommendations || []).forEach((r, i) => {
-                    let bgStyle = r.poster ? `background-image: url('${r.poster}'); background-size: cover; background-position: center;` : '';
-                    let gradientClass = r.poster ? '' : getGradientClass(i + idx * 2);
                     becauseHTML += `
-                        <div class="byw-card ${gradientClass}" style="${bgStyle}">
-                            <div class="placeholder-title">${r.title}</div>
+                        <div class="byw-card ${getGradientClass(i + idx * 2)}">
+                            <div class="placeholder-title">${r}</div>
                             <span class="match-badge">${Math.floor(Math.random() * 20 + 80)}% match</span>
                             <div class="play-overlay"><svg class="play-icon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg></div>
                             <div class="progress-bar"><div class="progress-fill" style="width: ${Math.floor(Math.random() * 60 + 40)}%;"></div></div>
@@ -592,4 +664,4 @@
     // Auto fetch on load
     window.onload = () => login();
 </script>
-</html>
+</html>```
