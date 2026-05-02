@@ -4,5 +4,94 @@
     "disliked_genres": [],
     "disliked_movies": [],
     "session_count": 2
+  },
+  "23": {
+    "liked_genres": [
+      "Comedy",
+      "Drama",
+      "Romance",
+      "Adventure",
+      "Fantasy",
+      "Horror",
+      "Sci-Fi",
+      "Action",
+      "Thriller"
+    ],
+    "disliked_genres": [
+      "Comedy",
+      "Drama",
+      "Fantasy",
+      "Mystery",
+      "Romance"
+    ],
+    "disliked_movies": [
+      "PK (2014)"
+    ],
+    "rated_movies": [
+      "Graduate, The (1967)",
+      "Strictly Sexual (2008)",
+      "Eat Drink Man Woman (Yin shi nan nu) (1994)",
+      "Stand, The (1994)",
+      "Eva (2011)",
+      "American Beauty (1999)",
+      "Like Water for Chocolate (Como agua para chocolate) (1992)",
+      "PK (2014)",
+      "Matrix, The (1999)"
+    ],
+    "session_count": 1
+  },
+  "234": {
+    "liked_genres": [
+      "Action",
+      "Sci-Fi",
+      "Adventure",
+      "Comedy",
+      "Fantasy",
+      "Romance"
+    ],
+    "disliked_genres": [
+      "Crime",
+      "Drama"
+    ],
+    "disliked_movies": [
+      "Godfather, The (1972)"
+    ],
+    "rated_movies": [
+      "Godfather, The (1972)",
+      "Terminator 2: Judgment Day (1991)",
+      "Princess Bride, The (1987)",
+      "Dr. Strangelove or: How I Learned to Stop Worrying and Love the Bomb (1964)",
+      "Don't Look Now: We're Being Shot At (La grande vadrouille) (1966)"
+    ],
+    "session_count": 0
+  },
+  "34": {
+    "liked_genres": [
+      "Drama",
+      "Romance",
+      "Sci-Fi",
+      "Comedy",
+      "Action",
+      "Adventure",
+      "Animation",
+      "Fantasy",
+      "Mystery",
+      "Thriller"
+    ],
+    "disliked_genres": [],
+    "disliked_movies": [],
+    "rated_movies": [
+      "American Beauty (1999)",
+      "Eternal Sunshine of the Spotless Mind (2004)",
+      "Perfect Sense (2011)",
+      "Love Actually (2003)",
+      "Star Wars: Episode VI - Return of the Jedi (1983)",
+      "All-Star Superman (2011)",
+      "Akira (1988)",
+      "Final Fantasy VII: Advent Children (2004)",
+      "Donnie Darko (2001)",
+      "Pretty Woman (1990)"
+    ],
+    "session_count": 0
   }
 }
